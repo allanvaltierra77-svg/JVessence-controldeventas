@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#171717">
+<title>JV Essence | Control de ventas</title>
+<style>
+:root{--bg:#f5f5f4;--card:#fff;--ink:#191919;--muted:#737373;--line:#e5e5e5;--accent:#171717;--green:#15803d;--red:#b91c1c;--amber:#a16207}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:#171717;color:white;padding:22px 18px} .head{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border:1px solid #555;border-radius:12px;display:grid;place-items:center;font-weight:800;letter-spacing:-1px}.brand h1{font-size:20px;margin:0}.brand p{margin:3px 0 0;color:#c9c9c9;font-size:12px}
+main{max-width:1200px;margin:22px auto;padding:0 16px 40px}.notice{padding:12px 14px;border:1px solid #e7d8a8;background:#fff9e8;color:#6f5410;border-radius:12px;margin-bottom:16px;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}.stat,.panel{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:17px}.stat .label{color:var(--muted);font-size:12px}.stat .value{font-size:clamp(20px,3vw,27px);font-weight:750;margin-top:6px;letter-spacing:-.5px}.stat small{color:var(--muted);font-size:12px}
+.layout{display:grid;grid-template-columns:minmax(280px,350px) minmax(0,1fr);gap:16px;align-items:start}.panel h2{font-size:17px;margin:0 0 14px}.field{margin-bottom:12px}.field label{display:block;font-size:12px;font-weight:650;margin-bottom:5px}.field input,.field select,.field textarea,.filters input,.filters select{width:100%;border:1px solid #d4d4d4;background:white;border-radius:9px;padding:10px 11px;font:inherit;min-width:0;color:var(--ink)}.field textarea{min-height:68px;resize:vertical}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{border:1px solid var(--ink);border-radius:9px;padding:10px 13px;font:inherit;font-weight:650;cursor:pointer;background:var(--ink);color:white}.btn.secondary{background:white;color:var(--ink);border-color:#d4d4d4}.btn.danger{background:white;color:var(--red);border-color:#fecaca}.btn:focus,input:focus,select:focus,textarea:focus{outline:2px solid #a3a3a3;outline-offset:1px}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions .btn{flex:1}.calc{background:#f5f5f5;border-radius:10px;padding:11px;margin:4px 0 14px;font-size:13px}.calc div{display:flex;justify-content:space-between;gap:12px;margin:4px 0}.calc strong{font-variant-numeric:tabular-nums}.hint{font-size:12px;color:var(--muted);margin-top:6px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}.filters{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;width:100%;margin-bottom:12px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;min-width:850px;background:white}th,td{padding:11px 12px;text-align:left;border-bottom:1px solid #eee;vertical-align:top;font-size:13px}th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#666;background:#fafafa;position:sticky;top:0}tr:last-child td{border-bottom:0}.sub{color:var(--muted);font-size:11px;margin-top:3px}.money{white-space:nowrap;font-variant-numeric:tabular-nums}.pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}.paid{background:#dcfce7;color:#166534}.partial{background:#fef3c7;color:#854d0e}.pending{background:#fee2e2;color:#991b1b}.empty{text-align:center;padding:30px;color:var(--muted)}.rowbtn{border:0;background:none;text-decoration:underline;cursor:pointer;padding:3px 5px;color:#404040;font:inherit;font-size:12px}.footer{font-size:12px;color:var(--muted);margin-top:15px}.hidden{display:none!important}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){header{padding:17px 14px}main{padding:0 10px 28px;margin-top:13px}.stat,.panel{padding:13px}.stats{gap:8px}.filters{grid-template-columns:1fr 1fr}.filters input:first-child{grid-column:1/-1}.two{gap:8px}.brand h1{font-size:18px}}
+</style>
+</head>
+<body>
+<header><div class="head">
+  <div class="brand"><div class="logo">JV</div><div><h1>JV ESSENCE</h1><p>Panel personal · Ventas, entregas y pagos</p></div></div>
+  <button class="btn secondary" id="exportBtn">Exportar CSV</button>
+</div></header>
+<main>
+  <div class="notice"><strong>Importante:</strong> esta primera versión guarda los registros en este navegador y dispositivo. GitHub Pages publica la página, pero no sincroniza automáticamente los datos entre celulares y computadoras. Usa “Exportar respaldo” para guardar una copia.</div>
+  <section class="stats">
+    <div class="stat"><div class="label">Ventas registradas</div><div class="value" id="totalSales">$0.00</div><small id="salesCount">0 operaciones</small></div>
+    <div class="stat"><div class="label">Piezas entregadas</div><div class="value" id="totalPieces">0</div><small>Según los registros</small></div>
+    <div class="stat"><div class="label">Tu comisión estimada</div><div class="value" id="totalCommission">$0.00</div><small>Porcentaje guardado en cada venta</small></div>
+    <div class="stat"><div class="label">Saldo pendiente de cobro</div><div class="value" id="totalPending">$0.00</div><small id="paidSummary">$0.00 cobrados</small></div>
+  </section>
+  <div class="layout">
+    <section class="panel">
+      <h2 id="formTitle">Registrar entrega / venta</h2>
+      <form id="saleForm">
+        <input type="hidden" id="editId">
+        <div class="field"><label for="client">Cliente *</label><input id="client" required maxlength="100" placeholder="Nombre del cliente"></div>
+        <div class="field"><label for="product">Producto *</label><input id="product" required maxlength="100" placeholder="Ej. Llavero NFC personalizado"></div>
+        <div class="two">
+          <div class="field"><label for="date">Fecha *</label><input id="date" type="date" required></div>
+          <div class="field"><label for="kind">Tipo de venta</label><select id="kind"><option>Menudeo</option><option>Mayoreo</option><option>Personalizada</option></select></div>
+        </div>
+        <div class="two">
+          <div class="field"><label for="qty">Piezas entregadas *</label><input id="qty" type="number" min="1" step="1" value="1" required></div>
+          <div class="field"><label for="price">Precio por pieza ($) *</label><input id="price" type="number" min="0" step="0.01" required placeholder="0.00"></div>
+        </div>
+        <div class="field"><label for="commissionRate">Tu comisión (%)</label><input id="commissionRate" type="number" min="0" max="100" step="0.1" value="30" required><div class="hint">Inicia en 30%. Puedes cambiarla en una venta futura; cada registro conserva su porcentaje.</div></div>
+        <div class="calc">
+          <div><span>Total de la venta</span><strong id="calcTotal">$0.00</strong></div>
+          <div><span>Tu comisión estimada</span><strong id="calcCommission">$0.00</strong></div>
+          <div><span>Saldo después del pago registrado</span><strong id="calcBalance">$0.00</strong></div>
+        </div>
+        <div class="field"><label for="paid">Cantidad recibida del cliente ($)</label><input id="paid" type="number" min="0" step="0.01" value="0" required><div class="hint">Pon 0 si no ha pagado, el adelanto si abonó una parte o el total si ya liquidó.</div></div>
+        <div class="field"><label for="delivery">Estado de entrega</label><select id="delivery"><option>Entregado</option><option>Parcial</option><option>Pendiente</option></select></div>
+        <div class="field"><label for="notes">Notas (opcional)</label><textarea id="notes" maxlength="500" placeholder="Ej. Entregué 5 piezas; quedan 3 pendientes. Acuerdo de pago..."></textarea></div>
+        <div class="actions"><button class="btn" type="submit" id="saveBtn">Guardar registro</button><button class="btn secondary hidden" type="button" id="cancelEdit">Cancelar</button></div>
+      </form>
+    </section>
+    <section class="panel">
+      <div class="toolbar"><h2 style="margin:0">Historial de ventas</h2><div class="actions" style="flex:0 0 auto"><button class="btn secondary" id="backupBtn">Exportar respaldo</button><button class="btn secondary" id="restoreBtn">Importar</button><input class="hidden" type="file" id="restoreFile" accept=".json,application/json"></div></div>
+      <div class="filters">
+        <input id="search" placeholder="Buscar cliente o producto…">
+        <select id="filterKind"><option value="">Todos los tipos</option><option>Menudeo</option><option>Mayoreo</option><option>Personalizada</option></select>
+        <select id="filterPayment"><option value="">Todos los pagos</option><option value="paid">Liquidado</option><option value="partial">Abono</option><option value="pending">Pendiente</option></select>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Fecha / cliente</th><th>Producto</th><th>Tipo</th><th>Piezas</th><th>Total venta</th><th>Recibido</th><th>Saldo</th><th>Comisión</th><th>Estado pago</th><th>Acciones</th></tr></thead><tbody id="salesBody"></tbody></table><div class="empty hidden" id="empty">Todavía no hay ventas. Registra tu primera entrega en el formulario.</div></div>
+      <div class="footer" id="tableSummary">0 registros</div>
+    </section>
+  </div>
+  <div class="footer">Consejo: registra cada entrega o pedido por separado. Si un cliente hace otro abono, edita el registro y actualiza la cantidad total recibida. Guarda respaldos periódicamente.</div>
+</main>
+<script>
+(() => {
+  const KEY = 'jvEssenceSales_v1';
+  const $ = id => document.getElementById(id);
+  const money = n => new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(Number(n)||0);
+  const today = () => new Date().toLocaleDateString('en-CA');
+  let sales = [];
+  try { sales = JSON.parse(localStorage.getItem(KEY) || '[]'); if (!Array.isArray(sales)) sales=[]; } catch { sales=[]; }
+  const saveData = () => localStorage.setItem(KEY, JSON.stringify(sales));
+  const val = id => $(id).value;
+  const total = s => Number(s.qty) * Number(s.price);
+  const commission = s => total(s) * Number(s.rate) / 100;
+  const balance = s => Math.max(0, total(s) - Number(s.paid || 0));
+  const payState = s => Number(s.paid||0) >= total(s) && total(s)>0 ? 'paid' : Number(s.paid||0)>0 ? 'partial' : 'pending';
+  const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  $('date').value = today();
+  function preview(){
+    const t = Math.max(0,Number(val('qty'))||0)*Math.max(0,Number(val('price'))||0);
+    const c = t*Math.max(0,Math.min(100,Number(val('commissionRate'))||0))/100;
+    const b = Math.max(0,t-(Number(val('paid'))||0));
+    $('calcTotal').textContent=money(t); $('calcCommission').textContent=money(c); $('calcBalance').textContent=money(b);
+  }
+  ['qty','price','commissionRate','paid'].forEach(id=>$(id).addEventListener('input',preview));
+  function render(){
+    const sum = sales.reduce((a,s)=>({revenue:a.revenue+total(s),pieces:a.pieces+Number(s.qty),comm:a.comm+commission(s),pending:a.pending+balance(s),paid:a.paid+Number(s.paid||0)}),{revenue:0,pieces:0,comm:0,pending:0,paid:0});
+    $('totalSales').textContent=money(sum.revenue); $('totalPieces').textContent=String(sum.pieces);
+    $('totalCommission').textContent=money(sum.comm); $('totalPending').textContent=money(sum.pending);
+    $('salesCount').textContent=`${sales.length} ${sales.length===1?'operación':'operaciones'}`;
+    $('paidSummary').textContent=`${money(sum.paid)} recibidos`;
+    const q=val('search').trim().toLocaleLowerCase('es-MX'), k=val('filterKind'), p=val('filterPayment');
+    const filtered=[...sales].filter(s=>(!q||(s.client+' '+s.product).toLocaleLowerCase('es-MX').includes(q))&&(!k||s.kind===k)&&(!p||payState(s)===p)).sort((a,b)=>b.date.localeCompare(a.date)||b.created-b.created);
+    $('salesBody').innerHTML=filtered.map(s=>{
+      const state=payState(s), stateText=state==='paid'?'Liquidado':state==='partial'?'Abono':'Pendiente';
+      return `<tr>
+      <td>${escapeHtml(s.date)}<div class="sub">${escapeHtml(s.client)}</div></td>
+      <td>${escapeHtml(s.product)}<div class="sub">${escapeHtml(s.delivery||'')}</div></td>
+      <td>${escapeHtml(s.kind)}</td><td>${Number(s.qty)}</td>
+      <td class="money">${money(total(s))}<div class="sub">${money(s.price)} c/u</div></td>
+      <td class="money">${money(s.paid)}</td><td class="money">${money(balance(s))}</td>
+      <td class="money">${money(commission(s))}<div class="sub">${Number(s.rate)}%</div></td>
+      <td><span class="pill ${state}">${stateText}</span></td>
+      <td><button class="rowbtn" data-edit="${s.id}">Editar</button><button class="rowbtn" data-delete="${s.id}">Eliminar</button></td></tr>`;
+    }).join('');
+    $('empty').classList.toggle('hidden',filtered.length!==0);
+    $('tableSummary').textContent=`Mostrando ${filtered.length} de ${sales.length} registros · La comisión es estimada sobre el total vendido.`;
+    $('salesBody').querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>editSale(b.dataset.edit)));
+    $('salesBody').querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>deleteSale(b.dataset.delete)));
+  }
+  function resetForm(){
+    $('saleForm').reset(); $('editId').value=''; $('date').value=today(); $('qty').value='1'; $('commissionRate').value='30'; $('paid').value='0';
+    $('formTitle').textContent='Registrar entrega / venta'; $('saveBtn').textContent='Guardar registro'; $('cancelEdit').classList.add('hidden'); preview();
+  }
+  $('saleForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const id=val('editId'), qty=Number(val('qty')), price=Number(val('price')), paid=Number(val('paid')), rate=Number(val('commissionRate'));
+    if(!val('client').trim()||!val('product').trim()||!val('date')||!Number.isInteger(qty)||qty<1||price<0||paid<0||rate<0||rate>100){alert('Revisa los campos. La cantidad debe ser un entero positivo y la comisión debe estar entre 0 y 100%.');return;}
+    if(paid>qty*price){if(!confirm('La cantidad recibida supera el total de la venta. ¿Deseas guardar de todos modos?'))return;}
+    const old=sales.find(s=>s.id===id);
+    const record={id:id||String(Date.now())+'-'+Math.random().toString(36).slice(2,7),created:old?.created||Date.now(),date:val('date'),client:val('client').trim(),product:val('product').trim(),kind:val('kind'),qty,price,rate,paid,delivery:val('delivery'),notes:val('notes').trim()};
+    if(id)sales=sales.map(s=>s.id===id?record:s);else sales.push(record);
+    saveData();render();resetForm();
+  });
+  function editSale(id){
+    const s=sales.find(x=>x.id===id);if(!s)return;
+    for(const [field,key] of [['date','date'],['client','client'],['product','product'],['kind','kind'],['qty','qty'],['price','price'],['commissionRate','rate'],['paid','paid'],['delivery','delivery'],['notes','notes']])$(field).value=s[key]??'';
+    $('editId').value=s.id;$('formTitle').textContent='Editar registro';$('saveBtn').textContent='Guardar cambios';$('cancelEdit').classList.remove('hidden');preview();$('saleForm').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function deleteSale(id){if(!confirm('¿Eliminar este registro? Esta acción no se puede deshacer.'))return;sales=sales.filter(s=>s.id!==id);saveData();render();}
+  $('cancelEdit').addEventListener('click',resetForm);
+  ['search','filterKind','filterPayment'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',render));
+  function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);}
+  $('exportBtn').addEventListener('click',()=>{
+    const rows=[['Fecha','Cliente','Producto','Tipo','Piezas entregadas','Precio por pieza','Total venta','Pago recibido','Saldo pendiente','Comision %','Tu comision','Estado entrega','Notas']];
+    sales.forEach(s=>rows.push([s.date,s.client,s.product,s.kind,s.qty,s.price,total(s),s.paid,balance(s),s.rate,commission(s),s.delivery,s.notes||'']));
+    const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
+    download('JV-Essence-ventas.csv',csv,'text/csv;charset=utf-8;');
+  });
+  $('backupBtn').addEventListener('click',()=>download('JV-Essence-respaldo-'+today()+'.json',JSON.stringify({app:'JV Essence Control',version:1,exportedAt:new Date().toISOString(),sales},null,2),'application/json'));
+  $('restoreBtn').addEventListener('click',()=>$('restoreFile').click());
+  $('restoreFile').addEventListener('change',async e=>{
+    const file=e.target.files[0];if(!file)return;
+    try{const data=JSON.parse(await file.text());const incoming=Array.isArray(data)?data:data.sales;if(!Array.isArray(incoming))throw new Error('Formato inválido');
+      if(!confirm(`Se importarán ${incoming.length} registros y se combinarán con los actuales. Si hay IDs iguales, prevalecerá el registro importado. ¿Continuar?`))return;
+      const map=new Map(sales.map(s=>[s.id,s]));incoming.forEach(s=>{if(s&&s.id&&s.client&&s.product&&Number.isFinite(Number(s.qty))&&Number.isFinite(Number(s.price)))map.set(s.id,s);});sales=[...map.values()];saveData();render();alert('Respaldo importado.');}
+    catch(err){alert('No se pudo importar el archivo. Selecciona un respaldo JSON válido de JV Essence.');}
+    finally{e.target.value='';}
+  });
+  preview();render();
+})();
+</script>
+</body>
+</html>
