@@ -73,7 +73,7 @@ main{max-width:1200px;margin:22px auto;padding:0 16px 40px}.notice{padding:12px 
           <div class="field"><label for="orderedQty">Piezas solicitadas (total) *</label><input id="orderedQty" type="number" min="1" step="1" value="1" required><div class="hint">Cantidad total del pedido, incluyendo las que faltan por entregar.</div></div>
         </div>
         <div class="field"><label for="price">Precio por pieza ($) *</label><input id="price" type="number" min="0" step="0.01" required placeholder="0.00"></div>
-        <div class="field"><label for="commissionRate">Tu comisión (%)</label><input id="commissionRate" type="number" min="0" max="100" step="0.1" value="30" required><div class="hint">Inicia en 30%. Puedes cambiarla en una venta futura; cada registro conserva su porcentaje.</div></div>
+        <div class="field"><label for="commissionRate">Tu comisión (%)</label><input id="commissionRate" type="number" min="0" max="100" step="0.1" value="20" required><div class="hint">Inicia en 20%. Puedes cambiarla en una venta futura; cada registro conserva su porcentaje.</div></div>
         <div class="calc">
           <div><span>Total de la venta</span><strong id="calcTotal">$0.00</strong></div>
           <div><span>Tu comisión estimada</span><strong id="calcCommission">$0.00</strong></div>
@@ -236,7 +236,7 @@ main{max-width:1200px;margin:22px auto;padding:0 16px 40px}.notice{padding:12px 
     $('salesBody').querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>deleteSale(b.dataset.delete)));
   }
   function resetForm(){
-    $('saleForm').reset(); $('editId').value=''; $('date').value=today(); $('qty').value='1'; $('orderedQty').value='1'; $('commissionRate').value='30'; $('paid').value='0';
+    $('saleForm').reset(); $('editId').value=''; $('date').value=today(); $('qty').value='1'; $('orderedQty').value='1'; $('commissionRate').value='20'; $('paid').value='0';
     $('formTitle').textContent='Registrar entrega / venta'; $('saveBtn').textContent='Guardar registro'; $('cancelEdit').classList.add('hidden'); preview();
   }
   $('saleForm').addEventListener('submit',e=>{
